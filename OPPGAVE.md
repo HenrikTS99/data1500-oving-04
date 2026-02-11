@@ -33,30 +33,46 @@ I et klasserom kan studentene lese beskjeder fra læreren. Hvert klasserom har o
 
 ```
 erDiagram
-    studenter {
-    }
-    lærere {
-    }
-    klasserom {
-    }
-    grupper {
-    }
-    forum {
-    }
-    innlegg {
-    }
-    beskjeder {
+
+    brukere {
     }
 
-    klasserom }o..|| lærere: "en-til-mange"
-    studenter }o..o{ grupper: "mange-til-mange"
-    klasserom }|..o{ grupper: "mange-til-mange"
-    klasserom ||..|| forum: "en-til-en"
-    forum ||..o{ innlegg: "en-til-mange"
-    innlegg ||..o{ innlegg: "en-til-mange"
-    klasserom ||..o{ beskjeder: "en-til-mange"
-    innlegg ||..o{ innlegg: "en-til-mange"
-    klasserom ||..o{ beskjeder: "en-til-mange"
+    studenter {
+    }
+
+    lærere {
+    }
+
+    klasserom {
+    }
+
+    grupper {
+    }
+
+    gruppe_klasserom {
+    }
+
+    bruker_gruppe {
+    }
+
+    innlegg {
+    }
+
+    brukere ||..|{ studenter: "is a"
+    brukere ||..|{ lærere: "is a"
+    brukere ||..o{ innlegg: "skriver"
+
+    klasserom }o..|| lærere: "ansvarlig for"
+
+    studenter ||..o{ bruker_gruppe: "medlem av"
+    grupper ||..o{ bruker_gruppe: "inneholder"
+
+    klasserom ||..o{ gruppe_klasserom: "tilgjengelig for"
+    grupper ||..o{ gruppe_klasserom: "har adgang til"
+
+    klasserom ||..|| innlegg: "inneholder forum"
+
+    innlegg ||..o{ innlegg: "svar på"
 ```
 
 ## Del 2: Logisk Skjema (Tabellstruktur)
@@ -67,22 +83,28 @@ erDiagram
 
 ```
 erDiagram
-    studenter {
+
+    brukere {
         int student_id PK
         varchar(50) brukernavn
         varchar(50) passord
     }
-    lærere {
-        int lærer_id PK
-        varchar(50) brukernavn
-        varchar(50) passord
+
+    studenter {
+        int bruker_id PK
     }
+
+    lærere {
+        int bruker_id PK
+    }
+
     klasserom {
         int rom_kode PK
         varchar(50) rom_navn
         int lærer_id FK
         int forum_id FK
     }
+
     grupper {
         int gruppe_id PK
     }
@@ -99,38 +121,31 @@ erDiagram
         int student_id FK
     }
 
-    forum {
-        int forum_id PK
-        int klasserom_kode FK
-
-    }
     innlegg {
-        int innlegg_id PK
-        int avsender FK
-        timestamp dato
-        varchar(50) overskrift
-        text innhold
-        int svarinnlegg FK
-    }
-
-    beskjeder {
         int innlegg_id PK
         int avsender FK
         int rom_kode FK
         timestamp dato
         varchar(50) overskrift
         text innhold
+        int svarinnlegg FK
     }
 
-    klasserom }o..|| lærere: "en-til-mange"
-    studenter }o..o{ bruker_gruppe: "en-til-mange"
-    grupper }o..o{ bruker_gruppe: "en-til-mange"
-    klasserom ||..o{ gruppe_klasserom: "en-til-mange"
-    grupper ||..o{ gruppe_klasserom: "en-til-mange"
-    klasserom ||..|| forum: "en-til-en"
-    forum ||..o{ innlegg: "en-til-mange"
-    innlegg ||..o{ innlegg: "en-til-mange"
-    klasserom ||..o{ beskjeder: "en-til-mange"
+    brukere ||..|{ studenter: "is a"
+    brukere ||..|{ lærere: "is a"
+    brukere ||..o{ innlegg: "skriver"
+
+    klasserom }o..|| lærere: "ansvarlig for"
+
+    studenter ||..o{ bruker_gruppe: "medlem av"
+    grupper ||..o{ bruker_gruppe: "inneholder"
+
+    klasserom ||..o{ gruppe_klasserom: "tilgjengelig for"
+    grupper ||..o{ gruppe_klasserom: "har adgang til"
+
+    klasserom ||..|| innlegg: "inneholder forum"
+
+    innlegg ||..o{ innlegg: "svar på"
 ```
 
 ## Del 3: Datadefinisjon (DDL) og Mock-Data
